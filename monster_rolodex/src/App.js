@@ -1,14 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
 import React, { Component } from 'react'
+import CardLIst from "./components/card-list/card-list.component"
+import SearchBox from './components/search-box.js/search-box';
 
 export default class App extends Component {
   constructor(){
     super();
     this.state ={
-      monsters:[
-
-      ]
+      monsters:[],
+      wholeMonsters:[],
     }
   }
   componentDidMount(){
@@ -18,37 +19,33 @@ export default class App extends Component {
     .then((data) => 
       this.setState((state,prop)=> {
         return{
-          monsters: data
+          monsters: data,
+          wholeMonsters: data
         }
       },
       () => {
         console.log(this.state)
       } 
     ))
+
+  }
+   searchWord(event){
+    const searchedWord = event.target.value.toUpperCase()
+    console.log(searchedWord)
+    const filteredMonsters = this.state.wholeMonsters.filter((monster)=>{
+      return monster.name.toUpperCase().includes(searchedWord)
+    })
+
+    this.setState(()=> {return {monsters: filteredMonsters}})
   }
 
   render() {
-    
     return (
       <div>
 
-        <input 
-          type="search" 
-          placeholder='search monster'
-          onChange={(event)=>{
-            const filteredMonsters = this.state.monsters.filter((monster)=>{
-             return monster.name.include(event.target.value)
-            })
-          }}
+          <SearchBox searchMonster = {this.searchWord.bind(this)}/>
+          <CardLIst monsters= {this.state.monsters}/>
 
-        />
-        {this.state.monsters.map((monster)=>
-          <div key= {monster.id}>
-            <h2>{monster.name}</h2>
-
-          </div>
-          
-        )}
       </div>
     )
   }
